@@ -1,0 +1,160 @@
+{{>_nav}}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    Buscar
+                </div>
+                <div class="p-2">
+                    <form action="/admin/registrys/search">
+                        <select class="form-control" name="filter" id="selectSearch">
+                            <option value="1" name="name"></option>
+                        </select>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Nome" type="search" name="term">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit"><i
+                                        class="ri-search-line"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="text-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                Filtros <i class="ri-filter-2-line"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right">
+                                <button class="dropdown-item" data-toggle="modal" data-target="#modalCep">Cep</button>
+                                <button class="dropdown-item" data-toggle="modal"
+                                    data-target="#modalStreet">Endereço</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row pt-3">
+                <div class="col-6 col-sm-6">
+                    <h1>Cadastros</h1>
+                </div>
+                <div class="col-6 col-sm-6 text-right">
+                    <a class="btn btn-sm btn-primary" href="/admin/registry/create">
+                        <i class="ri-user-add-line"></i> Adicionar
+                    </a>
+                </div>
+            </div>
+            <hr>
+            <table class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">Nome: </th>
+                        <th scope="col">WhatsApp: </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each registry}}
+                    <tr>
+                        <td class="pt-4">{{name}}</td>
+                        <td class="pt-4">{{phone}}</td>
+                        <td>
+                            <div class="text-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false">
+                                        <i class="ri-settings-4-fill"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <span class="dropdown-item disabled">Ações</span>
+                                        <a href="/admin/registry/view/{{id}}" class="dropdown-item" role="button">
+                                            Visualizar
+                                        </a>
+                                        <a href="/admin/registry/update/{{id}}" class="dropdown-item" role="button">
+                                            Editar
+                                        </a>
+                                        <form class="p-0 m-0" action="/delete/registry" method="POST">
+                                            <input type="hidden" name="id" value="{{id}}">
+                                            <button type="submit" class="dropdown-item text-danger"
+                                                onclick="return confirm('Tem certeza que deseja deletar esse cadastro?');">
+                                                Deletar
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {{else}}
+                    <div class="alert alert-danger w-100" role="alert">
+                        Nenhum cadastro encontrado.
+                    </div>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{>_footer}}
+</div>
+<!-- Modal Buscar Cep -->
+<div class="modal fade" id="modalCep" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pesquisar por cep:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/admin/registrys/search">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-control" name="filter" id="selectSearch">
+                                <option value="2" name="cep"></option>
+                            </select>
+                            <small id="filtro" class="form-text text-muted">Exemplo: 00000-000</small>
+                            <input class="form-control mr-sm-2" id="cep" type="search" name="term"
+                                placeholder="Buscar por..." aria-label="Search">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- Modal Buscar Endereço -->
+<div class="modal fade" id="modalStreet" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Pesquisar por endereço:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/admin/registrys/search">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <select class="form-control" name="filter" id="selectSearch">
+                                <option value="3" name="street"></option>
+                            </select>
+                            <small id="filtro" class="form-text text-muted">Exemplo: Rua das
+                                Palmeiras</small>
+                            <input class="form-control mr-sm-2 textM" type="search" name="term"
+                                placeholder="Buscar por..." aria-label="Search">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Buscar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

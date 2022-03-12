@@ -1,0 +1,34 @@
+{{>_nav}}
+<div class="container col-6m">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin/registrys">Cadastros</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Visualizar</li>
+            </ol>
+        </nav>
+        <div class="card-body border rounded">
+            <input type="hidden" value="{{registry.id}}" name="id">
+            <dl>
+                <dt>Dados</dt>
+                <dd> Nome: {{registry.name}}</dd>
+                <dd> Nascimento: {{registry.birth}}</dd>
+                <dd> WhatsApp: {{registry.phone}}</dd>
+                <dd> Nome da Mãe: {{registry.mother}}</dd>
+                <dd> Escola: {{registry.schoolId}}</dd>
+                <hr>
+                <dt> Localidade</dt>
+                <dd> Cep: {{registry.zipcode}}</dd>
+                <dd> Endereço: {{registry.address}}</dd>
+                <dd> Bairro: {{registry.district}}</dd>
+                <dd> Cidade: {{registry.city}}</dd>
+                <dd> Estado: {{registry.state}}</dd>
+                <dd> Numero: {{registry.number}}</dd>
+                <hr>
+                <dt> Observações</dt>
+                <dd> {{registry.note}}</dd>
+            </dl>
+        </div>
+    </div>
+    {{>_footer}}
+</div>

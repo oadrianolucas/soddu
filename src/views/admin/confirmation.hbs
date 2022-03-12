@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="col-md-4 offset-md-4">
+        <div class="text-center">
+            <img id="logo2" src="/assets/img/logo-black.svg" alt="Logo">
+        </div>
+        <div class="bg-white p-4 mb-4 rounded border">
+          <h3>Ative sua conta.</h3>
+          <p class="text-secondary">Clique no botão a baixo e ative sua conta.</p>
+          <form method="POST" action="/verify/token">
+            <input type="hidden" value="{{user.id}}" name="id" />
+            <button class="btn btn-success" type="submit">Confirmar</button>
+          </form>
+        </div>
+        {{>_footer}}
+    </div>
+</div>

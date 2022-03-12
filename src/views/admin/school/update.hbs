@@ -1,0 +1,26 @@
+{{>_nav}}
+<div class="container col-6m">
+    <div class="col-md-6 offset-md-3">
+    <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin/schools">Escolas</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Editar</li>
+            </ol>
+        </nav>
+        <div class="card-body border rounded">
+            <h4>Escolas</h4>
+            <form action="/update/school" method="POST">
+                <input type="hidden" value="{{school.id}}" name="id">
+                <div class="form-group">
+                    <label for="name">Nome:</label>
+                    <input class="form-control" type="text" name="name" value="{{school.name}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Zona:</label>
+                    <input class="form-control" type="text" name="zone" value="{{school.zone}}" required>
+                </div>
+                <button class="btn btn-sm btn-warning" type="submit"><i class="ri-edit-line"></i> Editar</button>
+            </form>
+        </div>
+    </div>
+</div>
