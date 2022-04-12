@@ -1,52 +1,52 @@
-const Registry = require("../models/Registry")
-const sqlz = require("sequelize")
+const sequelize = require("sequelize")
+const User = require("../models/User")
 const School = require("../models/Schools")
 
-const RegistrysController = {
-  GetFindAllRegistrys(req, res) {
-    Registry.findAll().then((registry) => {
-      res.render("admin/registry/registrys", {
-        registry: registry.map((registry) => registry.toJSON()),
+const UsersController = {
+  GetFindAllUsers(req, res) {
+    User.findAll().then((user) => {
+      res.render("admin/users", {
+        user: user.map((user) => user.toJSON()),
       })
     })
   },
 
-  GetCreateRegistry(req, res) {
+  GetCreateUser(req, res) {
     School.findAll().then((school) => {
-      res.render("admin/registry/create", {
+      res.render("admin/user/create", {
         school: school.map((school) => school.toJSON()),
       })
     })
   },
 
-  GetViewRegistry(req, res) {
+  GetViewUser(req, res) {
     var id = req.params.id
-    Registry.findByPk(id).then((registry) => {
-      if (registry != undefined) {
-        res.render("admin/registry/view", { registry: registry.toJSON() })
+    User.findByPk(id).then((user) => {
+      if (user != undefined) {
+        res.render("admin/user/view", { user: user.toJSON() })
       } else {
-        res.redirect("/admin/registrys")
+        res.redirect("/admin/users")
       }
     })
   },
 
-  GetUpdateRegistry(req, res) {
+  GetUpdateUser(req, res) {
     var id = req.params.id
-    Registry.findByPk(id).then((registry) => {
-      if (registry != undefined) {
+    User.findByPk(id).then((user) => {
+      if (user != undefined) {
         School.findAll().then((school) => {
-          res.render("admin/registry/update", {
-            registry: registry.toJSON(),
+          res.render("admin/user/update", {
+            user: user.toJSON(),
             school: school.map((school) => school.toJSON()),
           })
         })
       } else {
-        res.redirect("/admin/registrys")
+        res.redirect("/admin/users")
       }
     })
   },
 
-  PostCreateRegistry(req, res) {
+  PostCreateUser(req, res) {
     const name = req.body.name
     const birth = req.body.birth
     const phone = req.body.phone
@@ -60,7 +60,7 @@ const RegistrysController = {
     const school = req.body.school
     const note = req.body.note
 
-    Registry.create({
+    User.create({
       name: name.toLowerCase(),
       birth: birth.toLowerCase(),
       phone: phone,
@@ -75,33 +75,33 @@ const RegistrysController = {
       schoolId: school,
     })
       .then(() => {
-        res.redirect("/admin/registrys")
+        res.redirect("/admin/users")
       })
       .catch((erro) => {
         res.send("Error ao realizar o cadastrado" + erro)
       })
   },
 
-  PostDeleteRegistry(req, res) {
+  PostDeleteUser(req, res) {
     var id = req.body.id
     if (id != undefined) {
       if (!isNaN(id)) {
-        Registry.destroy({
+        User.destroy({
           where: {
             id: id,
           },
         }).then(() => {
-          res.redirect("/admin/registrys")
+          res.redirect("/admin/users")
         })
       } else {
-        res.redirect("/admin/registrys")
+        res.redirect("/admin/users")
       }
     } else {
-      res.redirect("/admin/registrys")
+      res.redirect("/admin/users")
     }
   },
 
-  PostUpdateRegistry(req, res) {
+  PostUpdateUser(req, res) {
     var id = req.body.id
     var name = req.body.name
     var birth = req.body.birth
@@ -116,20 +116,12 @@ const RegistrysController = {
     var school = req.body.school
     var note = req.body.note
 
-    Registry.update(
+    User.update(
       {
         name: name,
         birth: birth,
         phone: phone,
-        mother: mother,
-        zipcode: zipcode,
-        address: address,
-        district: district,
-        city: city,
-        state: state,
-        number: number,
-        school: school,
-        note: note,
+        Registrys,
       },
       {
         where: {
@@ -137,13 +129,12 @@ const RegistrysController = {
         },
       }
     ).then(() => {
-      res.redirect("/admin/registrys")
+      res.redirect("/admin/user")
     })
   },
-
-  GetSearchRegistrys(req, res) {
+  GetSearchUsers(req, res) {
     const { term, filter } = req.query
-    const Op = sqlz.Op
+    const Op = sequelize.Op
 
     let termsFilter = {}
     if (filter === "1")
@@ -165,15 +156,15 @@ const RegistrysController = {
         },
       }
 
-    Registry.findAll({
+    User.findAll({
       where: termsFilter,
     }).then((termsFilter) => {
       console.log(termsFilter)
-      res.render("admin/registry/registrys", {
-        registry: termsFilter.map((registry) => registry.toJSON()),
+      res.render("admin/users", {
+        user: termsFilter.map((user) => user.toJSON()),
       })
     })
   },
 }
 
-module.exports = RegistrysController
+module.exports = UsersController

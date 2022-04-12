@@ -1,143 +1,65 @@
-const User = require("../models/User")
-const bcrypt = require("bcryptjs")
-const mailer = require("nodemailer")
-const crypto = require("crypto")
-const alert = require("../middlewares/alert")
-const UsersController = {
-  GetFindAllUsers(req, res) {
-    User.findAll().then((user) => {
-      res.render("admin/user/users", {
-        user: user.map((user) => user.toJSON()),
+const School = require("../models/Schools")
+const SchoolsController = {
+  GetFindAllSchools(req, res) {
+    School.findAll().then((school) => {
+      res.render("admin/school/schools", {
+        school: school.map((school) => school.toJSON()),
       })
     })
   },
-
-  GetUpdateUser(req, res) {
-    const id = req.params.id
-    User.findByPk(id).then((user) => {
-      if (user != undefined) {
-        res.render("admin/user/update", { user: user.toJSON() })
+  GetUpdateSchool(req, res) {
+    var id = req.params.id
+    School.findByPk(id).then((school) => {
+      if (school != undefined) {
+        res.render("admin/school/update", { school: school.toJSON() })
       } else {
-        res.redirect("/admin/settings")
+        res.redirect("/admin/schools")
       }
     })
   },
 
-  PostCreateUser(req, res) {
+  PostCreateSchool(req, res) {
     const name = req.body.name
-    const login = req.body.login
-    const email = req.body.email
-    const password = crypto.randomBytes(2).toString("hex")
-    const filter = req.body.filter
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(password, salt)
-    const url = process.env.PUBLIC_URL
-    const token = crypto.randomBytes(64).toString("hex")
-
-    User.create({
+    const zone = req.body.zone
+    School.create({
       name: name.toLowerCase(),
-      login: login,
-      email: email,
-      password: hash,
-      filter: filter,
-      token: token,
-      confirmation: false,
+      zone: zone,
     })
       .then(() => {
-        const tranporter = mailer.createTransport({
-          service: process.env.SERVICE_EMAIL,
-          auth: {
-            user: process.env.USER_EMAIL,
-            pass: process.env.PASSWORD_EMAIL,
-          },
-        })
-        let message = {
-          from: process.env.USER_EMAIL,
-          to: email,
-          subject: "Confirme sua conta na Soddu",
-          html: `
-          <h4>Olá, ${name}, bem-vindo a SODDU</h4>
-          <h4>Login: ${login}</h4>
-          <h4>Senha: ${password}</h4>
-          <span>Você poderá alterar essa senha depois.</span>
-          <p>Agora, é só você ativar a conta clicando no botão
-          abaixo antes de realizar o primeiro acesso.</p>
-          <a style="background:#15d798;border-radius: 11px;padding:20px 45px;color:#ffffff;display: inline-block;font-size:16px;font-family: sans-serif;text-align: center;" href="${url}/token/${token}">Ativar conta.</a>`,
-        }
-        tranporter.sendMail(message, function (error, info) {
-          if (error) {
-            console.log(error)
-            res.send(error)
-          } else {
-            res.redirect("/admin/settings")
-          }
-        })
+        res.redirect("/admin/schools")
       })
       .catch((erro) => {
-        res.send("Error ao realizar o Cadastrado" + erro)
+        res.send("Error ao criar nova escola." + erro)
       })
   },
-  GetTokenEmail(req, res) {
-    const token = req.params.token
-    User.findOne({ where: { token: token } }).then((user) => {
-      if (user != undefined) {
-        res.render("admin/confirmation", { user: user.toJSON() })
-      } else {
-        res.send("Token inválido ou e-mail já confirmado.")
-      }
-    })
-  },
-  PostTokenEmail(req, res) {
-    const id = req.body.id
-    User.update(
-      {
-        token: null,
-        confirmation: true,
-      },
-      {
-        where: {
-          id: id,
-        },
-      }
-    ).then(() => {
-      req.flash("success_msg", alert.CONFIRMATION_EMAIL)
-      res.redirect("/")
-    })
-  },
-  GetDeleteUser(req, res) {
-    const id = req.body.id
+
+  PostDeleteSchool(req, res) {
+    var id = req.body.id
     if (id != undefined) {
       if (!isNaN(id)) {
-        User.destroy({
+        School.destroy({
           where: {
             id: id,
           },
         }).then(() => {
-          res.redirect("/admin/settings")
+          res.redirect("/admin/schools")
         })
       } else {
-        res.redirect("/admin/settings")
+        res.redirect("/admin/schools")
       }
     } else {
-      res.redirect("/admin/settings")
+      res.redirect("/admin/schools")
     }
   },
-  PostUpdateUser(req, res) {
-    const id = req.body.id
-    const name = req.body.name
-    const login = req.body.login
-    const email = req.body.email
-    const password = req.body.password
-    const filter = req.body.filter
-    const salt = bcrypt.genSaltSync(10)
-    const hash = bcrypt.hashSync(password, salt)
-    User.update(
+
+  PostUpdateSchool(req, res) {
+    var id = req.body.id
+    var name = req.body.name
+    var zone = req.body.zone
+    School.update(
       {
         name: name.toLowerCase(),
-        login: login,
-        email: email,
-        password: hash,
-        filter: filter,
+        zone: zone,
       },
       {
         where: {
@@ -145,46 +67,9 @@ const UsersController = {
         },
       }
     ).then(() => {
-      res.redirect("/admin/settings")
+      res.redirect("/admin/schools")
     })
-  },
-  PostLoginUser(req, res) {
-    const login = req.body.login
-    const password = req.body.password
-    User.findOne({ where: { login: login } }).then((user) => {
-      if (user != undefined) {
-        var correct = bcrypt.compareSync(password, user.password)
-        var confirmation = user.confirmation
-        if (correct) {
-          req.session.user = {
-            name: user.name,
-            login: user.login,
-            filter: user.filter,
-          }
-          if (confirmation == true) {
-            req.flash("success_msg", alert.LOGIN_SUCCESS)
-            res.redirect("/admin/registrys")
-          } else {
-            req.flash("error_msg", alert.UNCONFIRMED_EMAIL)
-            res.redirect("/")
-          }
-        } else {
-          req.flash("error_msg", alert.INVALID_PASSWORD)
-          res.redirect("/")
-        }
-      } else {
-        req.flash("error_msg", alert.INVALID_LOGIN)
-        res.redirect("/")
-      }
-    })
-  },
-  PostLogoutUser(req, res) {
-    req.session.user = undefined
-    res.redirect("/")
-  },
-  GetResetPasswords(req, res) {
-    res.render("admin/resetPassword")
   },
 }
 
-module.exports = UsersController
+module.exports = SchoolsController

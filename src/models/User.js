@@ -1,19 +1,44 @@
 const db = require("../database/db")
+//const Schools = require("../models/Schools");
 
 const User = db.Sequelize.define("users", {
   name: {
     type: db.sequelize.STRING,
   },
-  login: {
+  birth: {
     type: db.sequelize.STRING,
   },
-  email: {
+  phone: {
     type: db.sequelize.STRING,
   },
-  password: {
+  nis: {
+    type: db.sequelize.NUMBER,
+  },
+  cpf: {
     type: db.sequelize.STRING,
   },
-  filter: {
+  mother: {
+    type: db.sequelize.STRING,
+  },
+  zipcode: {
+    type: db.sequelize.STRING,
+  },
+  address: {
+    type: db.sequelize.STRING,
+  },
+  district: {
+    type: db.sequelize.STRING,
+  },
+  city: {
+    type: db.sequelize.STRING,
+  },
+  state: {
+    type: db.sequelize.STRING,
+  },
+  number: {
+    type: db.sequelize.STRING,
+  },
+  note: {
     type: db.sequelize.STRING,
   },
   token: {
@@ -23,6 +48,8 @@ const User = db.Sequelize.define("users", {
     type: db.sequelize.BOOLEAN,
   },
 })
+
+//Schools.hasMany(User);
 
 //User.sync({ force: true });
 
